@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#fff4ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Momo's Diner — Cashier Time!</title>
+<style>
+:root{--ink:#684536;--cream:#fff9ed;--pink:#ffb8c5;--pink2:#ffe0e2;--blue:#bce1ef;--green:#cfe49b;--mint:#cbe7d1;--yellow:#ffe49a;--shadow:0 12px 28px #835b4830}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:#fff1df;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold",system-ui,sans-serif;overflow:hidden}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+#game{width:min(100vw,1180px);height:100dvh;margin:auto;position:relative;overflow:hidden;background:linear-gradient(#c9e8f3 0 27%,#fbe4dc 27% 65%,#eebc91 65%);box-shadow:0 0 50px #76503a25}
+.sky{position:absolute;inset:0 0 auto;height:27%;background:linear-gradient(#c8e7f2,#e7f5f4)}
+.cloud{position:absolute;width:80px;height:30px;background:#fff;border-radius:40px;opacity:.85}.cloud:before,.cloud:after{content:"";position:absolute;background:#fff;border-radius:50%}.cloud:before{width:40px;height:40px;left:12px;top:-20px}.cloud:after{width:48px;height:48px;right:9px;top:-26px}
+.c1{left:7%;top:9%}.c2{right:10%;top:14%;transform:scale(.75)}
+.wall{position:absolute;left:0;right:0;top:27%;height:38%;background:repeating-linear-gradient(90deg,#f9cbd4 0 58px,#f9e3dd 58px 66px,#cde7ee 66px 124px,#f9e3dd 124px 132px)}
+.trim{position:absolute;left:0;right:0;top:27%;height:13px;background:#fff7e8;border-block:3px solid #d99e91}
+.shelf{position:absolute;top:34%;left:5%;width:29%;height:8px;border-radius:8px;background:#b67a5d;box-shadow:0 6px #8d5e49}.plant{position:absolute;top:-60px;width:50px;height:60px;background:#f8cfbd;border-radius:9px 9px 20px 20px}.plant:before{content:"✿";position:absolute;font-size:50px;top:-36px;left:0;color:#9bc58d}.plant.p1{left:18px}.plant.p2{right:18px}
+.sign{position:absolute;z-index:2;top:30%;left:38%;padding:9px 20px;border-radius:18px;background:#f9b6bf;border:5px solid #fff2e8;box-shadow:var(--shadow);font-weight:1000;font-size:clamp(16px,2vw,25px);transform:rotate(-2deg)}
+.lamps{position:absolute;top:0;left:0;right:0}.lamp{position:absolute;top:0;width:4px;height:85px;background:#9d735f}.lamp:after{content:"";position:absolute;left:-25px;bottom:-20px;width:54px;height:34px;border-radius:30px 30px 13px 13px;background:#ffe4a4;border:4px solid #fff3d4}.l1{left:24%}.l2{right:25%}
+.counter{position:absolute;left:0;right:0;bottom:0;height:35%;background:linear-gradient(#fff0d7 0 10%,#e5ad82 10%);border-top:8px solid #fff9e9}.counter:after{content:"";position:absolute;inset:35px 0 0;background:repeating-linear-gradient(90deg,#d99a7440 0 3px,transparent 3px 105px)}
+.hud{position:absolute;z-index:30;top:max(10px,env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none}.badge{padding:8px 13px;background:#fffaf0e8;border:4px solid #fff;border-radius:999px;box-shadow:0 6px 14px #72513d1c;font-weight:950;font-size:13px}
+.customer{position:absolute;z-index:5;left:4%;bottom:29%;width:27%;height:48%;transition:.45s}.customer.out{transform:translateX(-150%);opacity:0}.char{position:absolute;bottom:0;left:5%;width:78%;aspect-ratio:.82}
+.head{position:absolute;z-index:3;top:3%;left:10%;width:80%;height:58%;background:radial-gradient(circle at 35% 20%,#fffef7 0 13%,#fff7e8 45%,#f6e6ce 100%);border:4px solid #79503a;border-radius:48% 52% 47% 53%;box-shadow:inset 0 -8px #ead7bd}.ear{position:absolute;z-index:1;top:-9%;width:26%;height:30%;background:#d6e8f7;border:4px solid #79503a}.ear.l{left:6%;border-radius:80% 35% 40%;transform:rotate(-24deg)}.ear.r{right:6%;border-radius:35% 80% 40%;transform:rotate(24deg)}
+.eye{position:absolute;top:42%;width:10%;height:15%;border-radius:50%;background:linear-gradient(#6f4932,#8f5d3d)}.eye:after{content:"";position:absolute;left:18%;top:10%;width:36%;height:30%;border-radius:50%;background:white}.eye.l{left:28%}.eye.r{right:28%}.cheek{position:absolute;top:59%;width:17%;height:8%;background:#f7b8baaa;border-radius:50%}.cheek.l{left:10%}.cheek.r{right:10%}.mouth{position:absolute;top:61%;left:45%;width:11%;height:8%;border-bottom:4px solid #76503b;border-radius:0 0 50% 50%}
+.body{position:absolute;bottom:0;left:13%;width:74%;height:50%;border:4px solid #79503a;border-radius:50% 50% 42% 42%;background:linear-gradient(#b9d982,#d7e99f)}
+.speech{position:absolute;z-index:9;left:14%;top:-4%;width:96%;background:#fffaf0;border:4px solid #fff;outline:3px solid #9a6b52;border-radius:24px;padding:12px 15px;box-shadow:var(--shadow);font-weight:850;font-size:clamp(11px,1.35vw,16px);line-height:1.3}.speech:after{content:"";position:absolute;left:26%;bottom:-16px;border:9px solid transparent;border-top-color:#9a6b52}.speech b{color:#dc7384}
+.receipt{position:absolute;z-index:8;right:-16%;top:18%;width:118px;min-height:178px;padding:12px 9px;background:#fffdf5;box-shadow:5px 8px 15px #7a57412a;transform:rotate(5deg);text-align:center;font-family:ui-monospace,monospace;color:#795342}.receipt .logo{font-family:ui-rounded,system-ui;font-weight:1000;color:#dc8290;letter-spacing:.1em}.receipt .food{font-size:27px;margin:4px}.receipt .lines{text-align:left;font-size:9px;line-height:1.7;border-block:1px dashed #d7b8a6;padding:6px 0}.receipt .total{font-size:19px;font-weight:1000;margin-top:6px}.receipt small{font-size:7px}
+.momo{position:absolute;z-index:8;left:30%;bottom:25%;width:22%;height:36%}.momo .head{width:77%;height:60%;left:11%;top:0}.momo .body{height:55%;bottom:0;background:linear-gradient(110deg,#d5ec9a,#a9d35e);box-shadow:inset -16px 0 #9fc756}.momo .arm{position:absolute;z-index:5;top:48%;width:22%;height:18%;background:#fff5df;border:4px solid #79503a;border-radius:50%}.momo .arm.l{left:0;transform:rotate(22deg)}.momo .arm.r{right:0;transform:rotate(-22deg)}
+.momo .head.blink .eye{height:3px;top:48%;border-radius:10px}.momo .head.blink .eye:after{display:none}
+.workarea{position:absolute;z-index:10;right:2%;bottom:8%;width:49%;height:57%}
+.pos{position:absolute;right:0;bottom:12%;width:72%;background:#887a78;border:5px solid #725247;border-radius:24px;padding:9px;box-shadow:var(--shadow);transform:perspective(900px) rotateY(-2deg)}
+.screen{background:linear-gradient(135deg,#fff9f0,#fff);border:5px solid #544b4d;border-radius:17px;padding:10px;min-height:260px;box-shadow:inset 0 3px 10px #8d6b5c22}.screenTop{text-align:center;color:#d77c8e;font-size:12px;font-weight:1000;letter-spacing:.12em;margin-bottom:7px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.tab{border:2px solid #fff;border-radius:10px;padding:7px 2px;background:#f4e9e7;font-size:9px;font-weight:900}.tab:nth-child(2){background:#ffd0d8}.tab:nth-child(3){background:#cce6f5}.tab:nth-child(4){background:#dcebaa}.tab.active{outline:3px solid #f29aac}
+.posmain{display:grid;grid-template-columns:1fr 1.05fr;gap:8px;margin-top:8px}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.numbers button{min-height:38px;border:0;border-bottom:3px solid #d8c5bc;border-radius:8px;background:#fffaf5;font-weight:950}.numbers .clear{background:#f4d5e0}.display{background:#fff6e9;border:2px solid #f3dfc9;border-radius:12px;padding:9px;text-align:center}.display small{font-size:9px}.display strong{display:block;font-size:27px;color:#7c4050;margin:3px}.message{font-size:10px;line-height:1.3;min-height:42px}.settle{width:100%;margin-top:7px;border:0;border-bottom:4px solid #ce687a;border-radius:12px;background:#ff8198;color:white;padding:10px;font-weight:1000}.settle:active,.numbers button:active{transform:translateY(2px)}
+.plate{position:absolute;left:0;bottom:15%;width:29%;height:105px;border-radius:50%;background:radial-gradient(ellipse,#e7f0ee 0 48%,#8fa4a2 50% 60%,#d9e5e1 62% 70%,#738784 72%);border:4px solid #6e5850;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:11px;text-align:center;font-weight:1000}.moneyPile{position:absolute;font-size:38px;opacity:0;transform:scale(.4);transition:.35s}.plate.loaded .moneyPile{opacity:1;transform:scale(1) rotate(-7deg)}.plate.loaded .plateText{opacity:0}
+.terminal{position:absolute;left:3%;top:4%;width:24%;background:#758783;border:4px solid #654f48;border-radius:18px 18px 25px 25px;padding:7px;box-shadow:var(--shadow);transform:rotate(-3deg)}.termScreen{height:90px;background:#eef7ee;border:3px solid #52635e;border-radius:10px;padding:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;font-weight:900;overflow:hidden}.tapwave{animation:pulse .6s 3}@keyframes pulse{50%{transform:scale(1.08)}}.signature{font-family:cursive;font-size:26px;transform:rotate(-8deg)}
+.drawer{position:absolute;z-index:40;right:0;bottom:-1%;width:75%;padding:10px;background:#8a7772;border:5px solid #604b44;border-radius:18px;box-shadow:0 -12px 30px #4e342d44;transform:translateY(125%);transition:.4s cubic-bezier(.2,.9,.2,1)}.drawer.open{transform:translateY(0)}.drawerHead{display:flex;justify-content:space-between;background:#fff5e7;padding:7px 10px;border-radius:10px;margin-bottom:7px;font-size:11px;font-weight:1000}.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.slots button{border:3px solid #6c5750;border-radius:10px;min-height:62px;background:#d8e7f3;font-weight:1000}.slots button:nth-child(2){background:#d9ecc7}.slots button:nth-child(3){background:#ffd0d5}.slots button:nth-child(4){background:#d9cef1}.slots button.coin{background:#ead8b1}.slots .close{grid-column:span 4;background:#bfe1a8;min-height:40px}
+.toast{position:fixed;z-index:90;left:50%;top:11%;transform:translate(-50%,-15px);padding:10px 16px;border-radius:18px;background:#fff9ee;border:4px solid white;box-shadow:var(--shadow);font-weight:950;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+.overlay{position:fixed;z-index:100;inset:0;background:#6c4c3c55;backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px}.overlay.hide{display:none}.modal{width:min(430px,94vw);background:#fff8ec;border:6px solid white;border-radius:30px;padding:24px;text-align:center;box-shadow:0 25px 70px #5d3c3044}.modal h1{margin:5px;font-size:32px}.modal p{line-height:1.45}.start{border:0;border-bottom:5px solid #dc7187;border-radius:999px;background:#ff91a6;color:white;padding:13px 28px;font-weight:1000;font-size:18px}
+.spark{position:absolute;pointer-events:none;font-size:22px;animation:fly 1s forwards}@keyframes fly{to{transform:translateY(-80px) rotate(50deg);opacity:0}}
+@media(max-width:700px){
+ .hud .badge{font-size:10px;padding:6px 8px}.sign{top:29%;left:34%;font-size:13px}.customer{left:1%;bottom:46%;width:38%;height:35%}.speech{left:2%;top:-24%;width:130%;font-size:10px;padding:8px}.receipt{right:-38%;top:13%;width:88px;min-height:132px;padding:7px}.receipt .food{font-size:18px}.receipt .lines{font-size:7px}.receipt .total{font-size:14px}
+ .momo{left:32%;bottom:42%;width:29%;height:26%}.workarea{right:1%;bottom:3%;width:68%;height:49%}.pos{width:78%;bottom:12%;padding:5px;border-width:4px}.screen{min-height:205px;padding:6px;border-width:3px}.tabs{gap:3px}.tab{font-size:7px;padding:5px 1px}.posmain{gap:4px}.numbers{gap:3px}.numbers button{min-height:29px;font-size:11px}.display{padding:5px}.display strong{font-size:20px}.message{font-size:8px;min-height:35px}.settle{padding:7px;font-size:10px}.terminal{left:0;top:2%;width:22%}.termScreen{height:66px;font-size:8px}.plate{left:0;bottom:16%;width:21%;height:72px;font-size:8px}.drawer{width:80%}.slots button{min-height:47px;font-size:9px}
+}
+</style>
+</head>
+<body>
+<div id="game">
+<div class="sky"><div class="cloud c1"></div><div class="cloud c2"></div></div><div class="wall"></div><div class="trim"></div>
+<div class="shelf"><div class="plant p1"></div><div class="plant p2"></div></div><div class="sign">♡ MOMO DINER ♡</div><div class="lamps"><i class="lamp l1"></i><i class="lamp l2"></i></div><div class="counter"></div>
+<div class="hud"><div class="badge">🌷 PATRONS <span id="served">0</span>/10</div><div class="badge">⭐ <span id="score">0</span></div><div class="badge">♡ CASHIER TIME ♡</div></div>
+
+<div class="customer" id="customer">
+ <div class="speech" id="speech">Hello!</div>
+ <div class="char"><div class="ear l"></div><div class="ear r"></div><div class="head"><i class="eye l"></i><i class="eye r"></i><i class="cheek l"></i><i class="cheek r"></i><i class="mouth"></i></div><div class="body"></div></div>
+ <div class="receipt"><div class="logo">MOMO DINER</div><div class="food" id="food">🍮🥛</div><div class="lines"><span id="items"></span></div><div class="total">TOTAL <span id="receiptTotal">$0.00</span></div><small>Have a cozy day ♡<br>✿ · ✧ · ✿</small></div>
+</div>
+
+<div class="momo"><div class="head" id="momoHead"><i class="eye l"></i><i class="eye r"></i><i class="cheek l"></i><i class="cheek r"></i><i class="mouth"></i></div><div class="body"></div><i class="arm l"></i><i class="arm r"></i></div>
+
+<div class="workarea">
+ <div class="terminal"><div class="termScreen" id="term">♡ TAP & PAY ♡<br>Ready</div></div>
+ <div class="plate" id="plate"><span class="plateText">CASH<br>COUNTER</span><span class="moneyPile">💵🪙</span></div>
+ <div class="pos">
+  <div class="screen">
+   <div class="screenTop">✿ MOMO DINER POS ✿</div>
+   <div class="tabs"><button class="tab" id="home">⌂<br>Home</button><button class="tab" id="cash">▣<br>Cash Payment</button><button class="tab" id="card">◆<br>Card Payment</button><button class="tab" id="digi">▢<br>DigiMoney</button></div>
+   <div class="posmain">
+    <div class="numbers">
+     <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+     <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+     <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+     <button data-k="00">00</button><button data-k="0">0</button><button class="clear" data-k="C">×</button>
+    </div>
+    <div class="display"><small id="label">TOTAL</small><strong id="display">$0.00</strong><div class="message" id="message">Enter the bill total.</div><button class="settle" id="settle">CONFIRM TOTAL</button></div>
+   </div>
+  </div>
+ </div>
+ <div class="drawer" id="drawer"><div class="drawerHead"><span>CHANGE <b id="need">$0.00</b></span><span>SELECTED <b id="picked">$0.00</b></span></div><div class="slots">
+  <button data-d="1">$1<br>NOTE</button><button data-d="2">$2<br>NOTE</button><button data-d="5">$5<br>NOTE</button><button data-d="10">$10<br>NOTE</button>
+  <button class="coin" data-d=".1">10¢</button><button class="coin" data-d=".2">20¢</button><button class="coin" data-d=".5">50¢</button><button class="coin" id="undo">↶ UNDO</button>
+  <button class="close" id="close">✓ CLOSE DRAWER</button>
+ </div></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="overlay" id="intro"><div class="modal"><div style="font-size:50px">🐢🍓</div><h1>Momo's Diner</h1><h2>Cashier Time!</h2><p>Read each illustrated bill and listen to the patron's payment choice. The patrons handle their own cash, cards and signatures — you handle Momo's register.</p><button class="start" id="start">▶ START SHIFT</button></div></div>
+<div class="overlay hide" id="end"><div class="modal"><div style="font-size:50px">🌷🐢🌷</div><h1>Shift Complete!</h1><p id="final"></p><button class="start" onclick="location.reload()">PLAY AGAIN</button></div></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],fmt=n=>'$'+(+n).toFixed(2);
+const menus=[
+ ['Strawberry Pancake',5.20,'🍓🥞'],['Cream Soda',2.10,'🥤✨'],['Momo Pudding',3.40,'🍮🌼'],['Tiny Steak',6.50,'🥩🌿'],
+ ['Berry Toast',4.30,'🍞🫐'],['Warm Milk',1.80,'🥛☁️'],['Flower Omelette',5.60,'🍳🌷'],['Peach Parfait',4.90,'🍑🍨']
+];
+let s={phase:'',total:0,method:'',input:'',given:0,change:0,picked:0,picks:[],served:0,score:0,fail:0};
+function toast(t){let e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500)}
+function blink(){let h=$('#momoHead');h.classList.add('blink');setTimeout(()=>h.classList.remove('blink'),170)}
+setInterval(blink,3500);
+function active(id){$$('.tab').forEach(x=>x.classList.remove('active'));if(id)$(id).classList.add('active')}
+function msg(t){$('#message').textContent=t}
+function display(n){$('#display').textContent=fmt(n)}
+function val(){return +(Number(s.input||0)/100).toFixed(2)}
+function redraw(){display(val())}
+function makeOrder(){
+ let a=menus[Math.floor(Math.random()*menus.length)],b=menus[Math.floor(Math.random()*menus.length)];
+ while(b===a)b=menus[Math.floor(Math.random()*menus.length)];
+ s.total=+(a[1]+b[1]).toFixed(2);s.method=['cash','card','digi'][Math.floor(Math.random()*3)];
+ $('#food').textContent=a[2]+b[2];$('#items').innerHTML=`${a[0]} <b>${fmt(a[1])}</b><br>${b[0]} <b>${fmt(b[1])}</b>`;
+ $('#receiptTotal').textContent=fmt(s.total);
+ let m=s.method==='cash'?'cash 💵':s.method==='card'?'card 💳':'DigiMoney ✨';
+ $('#speech').innerHTML=`My total is <b>${fmt(s.total)}</b>.<br>I'll pay with <b>${m}</b>!`;
+ s.phase='total';s.input='';s.picked=0;s.picks=[];active('#home');$('#label').textContent='TOTAL';display(0);msg('Enter the total shown on the bill.');$('#settle').textContent='CONFIRM TOTAL';$('#plate').classList.remove('loaded');$('#term').innerHTML='♡ TAP & PAY ♡<br>Ready';$('#customer').classList.remove('out');
+}
+$$('.numbers button').forEach(b=>b.onclick=()=>{if(!['total','cashinput'].includes(s.phase))return;let k=b.dataset.k;if(k==='C')s.input='';else if(s.input.length<7)s.input+=k;redraw()});
+$('#settle').onclick=()=>{
+ if(s.phase==='total'){if(Math.abs(val()-s.total)>.001){msg('That total does not match the receipt.');toast('Check the bill again ♡');return}s.score+=20;s.input='';startPayment()}
+ else if(s.phase==='cashinput'){if(Math.abs(val()-s.given)>.001){msg('Check the amount shown by the cash counter.');toast('Try that amount again');return}s.phase='cashready';display(s.given);msg('Cash received. Settle the bill.');$('#settle').textContent='SETTLE BILLS'}
+ else if(s.phase==='cashready'){openDrawer()}
+ else if(s.phase==='paid'){complete()}
+};
+function startPayment(){
+ if(s.method==='cash'){
+  active('#cash');$('#label').textContent='CASH RECEIVED';display(0);msg('Patron is placing their money on the counter…');$('#settle').textContent='SETTLE BILLS';
+  let add=[0,1,2,5,10][Math.floor(Math.random()*5)];s.given=+(Math.ceil((s.total+add)*10)/10).toFixed(2);
+  setTimeout(()=>{$('#plate').classList.add('loaded');$('#speech').innerHTML='Here you go! 💵';},500);
+  setTimeout(()=>{s.phase='cashinput';s.input='';redraw();msg(`Cash counter: ${fmt(s.given)}. Enter the received amount.`);},1300)
+ }else{
+  let id=s.method==='card'?'#card':'#digi';active(id);s.phase='choosepay';$('#label').textContent='PAYMENT';display(s.total);msg(`Press ${s.method==='card'?'Card Payment':'DigiMoney'} on the POS.`);$('#settle').textContent='SETTLE BILLS'
+ }
+}
+$('#cash').onclick=()=>{if(s.phase==='choosepay'&&s.method!=='cash')toast('Patron chose another method');};
+$('#card').onclick=()=>payChoice('card');$('#digi').onclick=()=>payChoice('digi');$('#home').onclick=()=>active('#home');
+function payChoice(type){
+ if(s.phase!=='choosepay'||s.method!==type){toast('That is not the patron’s payment choice');return}
+ active(type==='card'?'#card':'#digi');s.phase='processing';msg('Waiting for patron…');$('#term').innerHTML='READY TO TAP<br>'+fmt(s.total);$('#term').classList.add('tapwave');
+ setTimeout(()=>{$('#speech').innerHTML=type==='card'?'I’ll tap my card now! 💳':'I’ll tap DigiMoney now! ✨';$('#term').innerHTML='PROCESSING…<br>•••'},700);
+ setTimeout(()=>type==='card'?cardResult():digiResult(),1700)
+}
+function cardResult(){
+ let r=Math.random();
+ if(r<.13){$('#term').innerHTML='INVALID CARD';msg('Invalid card. Patron will try another card.');$('#speech').innerHTML='Oh! I’ll use another card.';setTimeout(()=>{s.phase='choosepay';msg('Press Card Payment to retry.');$('#term').innerHTML='READY AGAIN'},1700);return}
+ $('#term').innerHTML='PLEASE SIGN ✎';msg('Patron is signing automatically…');setTimeout(()=>{$('#term').innerHTML='<span class="signature">Momo ♡</span>';},600);
+ setTimeout(()=>{if(Math.random()<.12&&s.fail<2){s.fail++;$('#term').innerHTML='SIGNATURE<br>NOT RECOGNISED';msg('Signature not recognised. Patron will sign again.');setTimeout(cardResult,1300)}else paid('Signature accepted ✓')},1700)
+}
+function digiResult(){
+ if(Math.random()<.14){$('#term').innerHTML='LOW BALANCE';msg('Insufficient DigiMoney balance. Patron is topping up…');$('#speech').innerHTML='Oops! Let me top up ✨';setTimeout(()=>{s.phase='choosepay';$('#term').innerHTML='TOP-UP COMPLETE';msg('Press DigiMoney to retry.')},1800);return}
+ paid(`Received ${fmt(s.total)} ✓`)
+}
+function paid(t){s.phase='paid';$('#term').innerHTML=t;msg('Payment received. Press Settle Bills.');toast('Payment received ♡')}
+function openDrawer(){
+ s.change=+(s.given-s.total).toFixed(2);s.picked=0;s.picks=[];s.phase='drawer';$('#need').textContent=fmt(s.change);$('#picked').textContent=fmt(0);$('#drawer').classList.add('open');msg(`Give exactly ${fmt(s.change)} change.`)
+}
+$$('[data-d]').forEach(b=>b.onclick=()=>{if(s.phase!=='drawer')return;let d=+b.dataset.d;if(s.picked+d>s.change+.001){toast('Too much change!');return}s.picked=+(s.picked+d).toFixed(2);s.picks.push(d);$('#picked').textContent=fmt(s.picked)});
+$('#undo').onclick=()=>{if(!s.picks.length)return;s.picked=+(s.picked-s.picks.pop()).toFixed(2);$('#picked').textContent=fmt(s.picked)};
+$('#close').onclick=()=>{if(Math.abs(s.picked-s.change)>.001){toast(`Need ${fmt(s.change)} exactly`);return}$('#drawer').classList.remove('open');complete()};
+function complete(){
+ s.score+=100;s.served++;$('#score').textContent=s.score;$('#served').textContent=s.served;msg('Transaction complete!');$('#speech').innerHTML='Thank you, Momo! ♡';sparkles();
+ setTimeout(()=>{$('#customer').classList.add('out')},650);
+ if(s.served>=10)setTimeout(()=>{$('#final').textContent=`You served 10 cozy patrons and earned ${s.score} points!`;$('#end').classList.remove('hide')},1500);
+ else setTimeout(makeOrder,1600)
+}
+function sparkles(){for(let i=0;i<9;i++){let e=document.createElement('i');e.className='spark';e.textContent=['✦','♡','✿'][i%3];e.style.left=(55+Math.random()*35)+'%';e.style.top=(45+Math.random()*25)+'%';document.body.appendChild(e);setTimeout(()=>e.remove(),1100)}}
+$('#start').onclick=()=>{$('#intro').classList.add('hide');makeOrder()}
+</script>
+</body>
+</html>
