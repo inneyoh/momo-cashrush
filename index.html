@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>Momo POS Prototype</title>
+<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f7e8d8;font-family:Arial,sans-serif}#stage{position:relative;width:100vw;height:100dvh;overflow:hidden}#table{position:absolute;left:0;bottom:0;width:100%;height:43%;object-fit:fill}#momo{position:absolute;left:31%;bottom:14%;height:62%;max-width:40%;object-fit:contain;object-position:center bottom}#wrap{position:absolute;right:2%;bottom:13%;width:min(48vw,720px);aspect-ratio:1.38}#pos{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.hot{position:absolute;border:0;background:transparent;cursor:pointer;padding:0}.hot:focus-visible{outline:3px solid #ff8fa8;border-radius:12px}#value{position:absolute;z-index:4;display:none;color:#613b30;font-weight:800}#coupon{position:absolute;z-index:4;display:none;border:0;outline:0;background:transparent;color:#613b30;font-weight:800;text-align:center}@media(max-width:700px){#momo{left:13%;bottom:32%;height:42%;max-width:55%}#wrap{right:1%;bottom:6%;width:74vw}#table{height:47%}}</style></head>
+<body><div id="stage"><img id="table" src="assets/table-sprite.png"><img id="momo" src="assets/momo-back.png"><div id="wrap"><img id="pos" src="assets/home-sprite.png"><div id="value"></div><input id="coupon" inputmode="numeric" maxlength="12"></div></div>
+<script>
+const W=document.querySelector('#wrap'),P=document.querySelector('#pos'),V=document.querySelector('#value'),C=document.querySelector('#coupon');let scr='home',recv='',coupon='',hots=[];const A='assets/';
+const S={home:A+'home-sprite.png',cash:A+'cash-sprite.png',card:A+'card-digimoney-sprite.png',coupon:A+'coupon-sprite.png'};
+function hot(n,x,y,w,h,f){let b=document.createElement('button');b.className='hot';b.ariaLabel=n;Object.assign(b.style,{left:x+'%',top:y+'%',width:w+'%',height:h+'%'});b.onclick=f;W.appendChild(b);hots.push(b)}
+function clear(){hots.forEach(x=>x.remove());hots=[]}
+function go(s){scr=s;P.src=S[s];recv='';V.style.display='none';C.style.display='none';clear();build()}
+function received(){V.textContent=recv;V.style.display='block';Object.assign(V.style,{left:'15%',top:'37%',width:'37%',height:'11%',fontSize:'clamp(14px,2vw,30px)'})}
+function build(){clear();
+if(scr==='home'){hot('Cash',17,64,14,20,()=>go('cash'));hot('Card',32,64,14,20,()=>go('card'));hot('DigiMoney',47,64,14,20,()=>go('card'));hot('Coupons',82,64,13,20,()=>go('coupon'))}
+else if(scr==='cash'){received();[['7',55,14],['8',67,14],['9',79,14],['4',55,29],['5',67,29],['6',79,29],['1',55,44],['2',67,44],['3',79,44],['0',61,59]].forEach(([k,x,y])=>hot(k,x,y,10,12,()=>{recv+=k;received()}));hot('.',73,59,10,12,()=>{if(!recv.includes('.')){recv+=(recv?'':'0')+'.';received()}});hot('Backspace',85,59,10,12,()=>{recv=recv.slice(0,-1);received()});hot('Home',13,75,18,18,()=>go('home'))}
+else if(scr==='card'){hot('Home',14,61,18,25,()=>go('home'))}
+else if(scr==='coupon'){C.style.display='block';Object.assign(C.style,{left:'24%',top:'34%',width:'55%',height:'15%',fontSize:'clamp(14px,2vw,28px)'});C.value=coupon;C.oninput=()=>{coupon=C.value.replace(/\D/g,'');C.value=coupon};hot('Home',78,13,10,13,()=>go('home'));hot('Use',36,56,36,20,()=>go('home'))}}
+build();
+</script></body></html>
